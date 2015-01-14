@@ -24,12 +24,12 @@ Installation
 
 To install, run the following::
 
-    pip install tekquota
+    pip install tekuila
 
 Or, if you wish to install the latest from source::
 
     git clone https://github.com/mikeodr/tekuila
-    cd tequila
+    cd tekuila
     python setup.py install
 
 License
