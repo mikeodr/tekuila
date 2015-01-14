@@ -137,7 +137,7 @@ class TekQuota():
             print "End Date: %s" % (enddate)
 
 
-if __name__ == "__main__":
+def main():
     PARSER = argparse.ArgumentParser(description='Check TekSavvy Cap')
     PARSER.add_argument("-c", "--config", help="Alternative config file")
     PARSER.add_argument("--cap", help="Your cap in GB")
