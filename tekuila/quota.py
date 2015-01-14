@@ -54,7 +54,7 @@ class Tekuila():
         if self.args.config is not None:
             path = self.args.config
         else:
-            path = os.path.expanduser('~/.tekquota')
+            path = os.path.expanduser(CONFIG_PATH)
 
         if os.path.isfile(path):
             config = configobj.ConfigObj(path)
