@@ -32,6 +32,31 @@ Or, if you wish to install the latest from source::
     cd tekuila
     python setup.py install
 
+API Usage
+=========
+
+Documentation comming soon.
+
+Console Usage
+=============
+
+Console command help::
+
+    tekuila -h
+    usage: tekuila [-h] [-c CONFIG] [--cap CAP] [--API API] [--warn WARN] [-v]
+
+    Check TekSavvy Cap
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -c CONFIG, --config CONFIG
+                            Alternative config file
+      --cap CAP             Your cap in GB
+      --API API             API Key
+      --warn WARN           Warn ratio against data cap, causes nonzero return
+                            code
+      -v, --verbose         Show output, don't just use return code
+
 License
 =======
 GPLv2
