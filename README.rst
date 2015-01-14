@@ -1,15 +1,17 @@
 =============
-TekSavvyQuota
+tekuila
 =============
 
-.. image:: https://travis-ci.org/mikeodr/TekSavvyQuota.svg?branch=master
-    :target: https://travis-ci.org/mikeodr/TekSavvyQuota
+"Have you had to much to download?"
+
+.. image:: https://travis-ci.org/mikeodr/tekuila.svg?branch=master
+    :target: https://travis-ci.org/mikeodr/tekuila
 
 Pull your TekSavvy Quota and act on it.
 
 To avoid using command line flags create a config file at::
 
-    ~/.tekquota
+    ~/.tekuila
 
 Place the following variables within the config file::
 
@@ -26,8 +28,8 @@ To install, run the following::
 
 Or, if you wish to install the latest from source::
 
-    git clone https://github.com/mikeodr/TekSavvyQuota
-    cd TekSavyQuota
+    git clone https://github.com/mikeodr/tekuila
+    cd tequila
     python setup.py install
 
 License

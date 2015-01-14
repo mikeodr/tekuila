@@ -28,10 +28,10 @@ import httplib
 import errno
 
 API_URL = '/web/Usage/UsageSummaryRecords?$filter=IsCurrent%20eq%20true'
-CONFIG_PATH = '~/.tekquota'
+CONFIG_PATH = '~/.tekuila'
 
 
-class TekQuota():
+class Tekuila():
     """Class for parsing ISP quota API and acting upon the results."""
     def __init__(self, args):
         self.api = None
@@ -148,6 +148,6 @@ def main():
                         help="Show output, don't just use return code")
 
     ARGS = PARSER.parse_args()
-    TQ = TekQuota(ARGS)
+    TQ = Tekuila(ARGS)
     TQ.check_cap()
     TQ.check_warn()

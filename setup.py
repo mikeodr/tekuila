@@ -5,16 +5,16 @@ def readme():
     with open('README.rst') as f:
         return f.read()
 
-setup(name='tekquota',
+setup(name='tekuila',
       version='0.1.0',
       description='Script for checking TekSavvy Quota',
       long_description=readme(),
-      url='https://github.com/mikeodr/TekSavvyQuota',
+      url='https://github.com/mikeodr/tekuila',
       author="Mike O'Driscoll",
       author_email="mike@mikeodriscoll.ca",
       license='GPL2',
-      packages=['tekquota'],
-      scripts=['bin/tekquota'],
+      packages=['tekuila'],
+      scripts=['bin/tekuila'],
       install_requires=[
               "configobj",
       ],
