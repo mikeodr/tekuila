@@ -1,7 +1,8 @@
 =============
 TekSavvyQuota
 =============
-.. image:; https://travis-ci.org/mikeodr/TekSavvyQuota.svg?branch=master
+
+.. image:: https://travis-ci.org/mikeodr/TekSavvyQuota.svg?branch=master
     :target: https://travis-ci.org/mikeodr/TekSavvyQuota
 
 Pull your TekSavvy Quota and act on it.
