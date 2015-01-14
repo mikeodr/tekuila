@@ -1,8 +1,9 @@
 from setuptools import setup
 
+
 def readme():
-      with open('README.rst') as f:
-            return f.read()
+    with open('README.rst') as f:
+        return f.read()
 
 setup(name='tekquota',
       version='0.1.0',
@@ -13,4 +14,7 @@ setup(name='tekquota',
       license='GPL2',
       packages=['tekquota'],
       scripts=['bin/tekquota'],
+      install_requires=[
+              "configobj",
+      ],
       zip_safe=False)
