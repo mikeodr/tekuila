@@ -20,7 +20,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 """
 
+from __future__ import print_function
 import os
+import sys
 import json
 import configobj
 import argparse
@@ -66,7 +68,7 @@ class Tekuila():
             if "WARN_RATIO" in config:
                 self.warn_ratio = float(config["WARN_RATIO"])
         else:
-            print "Config file does not exist"
+            print("Config file does not exist.", file=sys.stderr)
 
         # Allow override with args
         if self.args.API is not None:
@@ -82,7 +84,7 @@ class Tekuila():
         file set by user.
         """
         if self.api is None:
-            print "No API key provided"
+            print("No API key provided", file=sys.stderr)
             return errno.ENOENT
 
         headers = {"TekSavvy-APIKey": self.api}
@@ -102,7 +104,7 @@ class Tekuila():
         """
         if self.cap is not None:
             if self.download_total > self.cap:
-                print "Cap exceeded"
+                print("Cap exceeded %d/%d", self.download_total, self.cap)
                 return True
             else:
                 return False
@@ -114,40 +116,57 @@ class Tekuila():
         """
         if self.cap is not None and self.warn_ratio is not None:
             if (self.download_total/self.cap) > self.warn_ratio:
-                print "Warn level exceeded"
+                print("Warn level exceeded.")
                 return True
             else:
                 return False
 
-    def print_data(self):
-        """Prints the data pulled from the JSON results."""
-        peakdl = self.data["value"][0]["OnPeakDownload"]
-        peakul = self.data["value"][0]["OnPeakUpload"]
-        offpeakdl = self.data["value"][0]["OffPeakDownload"]
-        offpeakul = self.data["value"][0]["OffPeakUpload"]
-        startdate = self.data["value"][0]["StartDate"]
-        enddate = self.data["value"][0]["EndDate"]
+    def print_data(self, verbose=False):
+        """Prints the data pulled from the JSON results.
 
-        if self.verbose:
-            print "OnPeakDownload: %s" % (peakdl)
-            print "OnPeakUpload: %s" % (peakul)
-            print "OffPeakDownload: %s" % (offpeakdl)
-            print "OffPeakUpload: %s" % (offpeakul)
-            print "Start Date: %s" % (startdate)
-            print "End Date: %s" % (enddate)
+        verbose: default false, force print details.
+        return: None
+        """
+        if self.data is not None:
+            peakdl = self.data["value"][0]["OnPeakDownload"]
+            peakul = self.data["value"][0]["OnPeakUpload"]
+            offpeakdl = self.data["value"][0]["OffPeakDownload"]
+            offpeakul = self.data["value"][0]["OffPeakUpload"]
+            startdate = self.data["value"][0]["StartDate"]
+            enddate = self.data["value"][0]["EndDate"]
+
+            if self.verbose or verbose:
+                print("OnPeakDownload:", peakdl)
+                print("OnPeakUpload:", peakul)
+                print("OffPeakDownload:", offpeakdl)
+                print("OffPeakUpload:", offpeakul)
+                print("Start Date:", startdate)
+                print("End Date:", enddate)
 
 
 def main():
-    PARSER = argparse.ArgumentParser(description='Check TekSavvy Cap')
-    PARSER.add_argument("-c", "--config", help="Alternative config file")
-    PARSER.add_argument("--cap", help="Your cap in GB")
-    PARSER.add_argument("--API", help="API Key")
-    PARSER.add_argument("--warn", help="Warn ratio against data cap, "
+    """Main function to parse args and call init of Tekuila class.
+    Also calls all necessary functions if run as a command line application.
+
+    returns EOK on no errors and under the cap/warn settings.
+    returns non-zero when errors or over cap level
+    """
+    ret = 0  # EOK
+    parse = argparse.ArgumentParser(description='Check TekSavvy Cap')
+    parse.add_argument("-c", "--config", help="Alternative config file")
+    parse.add_argument("--cap", help="Your cap in GB")
+    parse.add_argument("--API", help="API Key")
+    parse.add_argument("--warn", help="Warn ratio against data cap, "
                                        "causes nonzero return code")
-    PARSER.add_argument("-v", "--verbose", action="store_true",
+    parse.add_argument("-v", "--verbose", action="store_true",
                         help="Show output, don't just use return code")
 
-    ARGS = PARSER.parse_args()
-    TQ = Tekuila(ARGS)
-    TQ.check_cap()
-    TQ.check_warn()
+    args = parse.parse_args()
+    tekq = Tekuila(args)
+    cap_warn = tekq.check_cap()
+    ratio_warn = tekq.check_warn()
+
+    if cap_warn or ratio_warn:
+        ret = errno.ENOMEM  # "You've had to much to download!"
+
+    return ret
