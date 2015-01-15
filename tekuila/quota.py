@@ -26,7 +26,10 @@ import sys
 import json
 import configobj
 import argparse
-import httplib
+try:
+    import httplib
+except:
+    import http.client as httplib
 import errno
 
 API_URL = '/web/Usage/UsageSummaryRecords?$filter=IsCurrent%20eq%20true'
