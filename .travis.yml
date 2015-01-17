@@ -7,4 +7,4 @@ python:
   - "3.4"
 install:
   - "pip install ."
-script: "tekuila --help && make -C doc html""
+script: "tekuila --help && make -C doc html"
