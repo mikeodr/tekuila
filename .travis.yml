@@ -7,4 +7,5 @@ python:
   - "3.4"
 install:
   - "pip install ."
+  - "pip install sphinx"
 script: "tekuila --help && make -C doc html"
