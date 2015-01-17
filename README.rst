@@ -57,6 +57,16 @@ Console command help::
                             code
       -v, --verbose         Show output, don't just use return code
 
+Pull Requests and Issues
+========================
+
+Pull requests very much welcome.
+Check that it complies with pep8, please make sure the documentation builds.
+
+Please use elementary commits vs big commits and try and have your commit
+messages be detailed. See Tim Pope's excellent `guide
+<http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html>`_.
+
 License
 =======
 GPLv2

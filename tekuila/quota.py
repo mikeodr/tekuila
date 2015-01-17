@@ -156,8 +156,8 @@ def main():
     """Main function to parse args and call init of Tekuila class.
     Also calls all necessary functions if run as a command line application.
 
-    returns EOK on no errors and under the cap/warn settings.
-    returns non-zero when errors or over cap level
+    :returns: EOK on no errors and under the cap/warn settings.
+        Otherwise non-zero when errors or over cap level.
     """
     ret = 0  # EOK
     parse = argparse.ArgumentParser(description='Check TekSavvy Cap')
@@ -169,7 +169,7 @@ def main():
                                       "causes nonzero return code if exceeded"
                                       ", in 0.1 increments to 1.0")
     parse.add_argument("-v", "--verbose", action="store_true",
-                        help="Show output, don't just use return code")
+                       help="Show output, don't just use return code")
 
     args = parse.parse_args()
     tekq = Tekuila(args.config, args.api, args.cap, args.warn, args.verbose)
