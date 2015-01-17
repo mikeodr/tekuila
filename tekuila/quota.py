@@ -26,6 +26,7 @@ import sys
 import json
 import configobj
 import argparse
+# Support both python 2 and 3
 try:
     import httplib
 except:
@@ -37,27 +38,38 @@ CONFIG_PATH = '~/.tekuila'
 
 
 class Tekuila():
-    """Class for parsing ISP quota API and acting upon the results."""
-    def __init__(self, args):
-        self.api = None
-        self.cap = None
+    """Parse the ISP quota API and act upon the results. """
+    def __init__(self, config=CONFIG_PATH, apikey=None, cap=None, warn=None,
+                 verbose=False):
+        """Construct a new fetch/parser to check cap and warn levels.
+
+        :param config: Path to config file to parse for API key, warn and cap
+            variables.
+        :param apikey: API key for TekSavvy, acquired from
+            https://myaccount.teksavvy.com/ApiKey/ApiKeyManagement
+        :param cap: Your cap in GB
+        :param warn: The ratio you would like a warning to be returned from
+            `check_cap` in 0.0 to 1.0 ratio.
+        :param verbose: Boolean, True to print output.
+        """
+        self.api = apikey
+        self.cap = cap
+        self.warn_ratio = warn
+        self.verbose = verbose
+        self.config = config
         self.data = None
         self.download_total = None
-        self.warn_ratio = None
-        self.verbose = False
-        self.config_path = CONFIG_PATH
-        self.args = args
 
         self.load_config()
         self.fetch_data()
         self.print_data()
 
     def load_config(self):
-        """Loads in the config file from CONFIG_PATH looking for api key, cap
-        limit and warn limit.
+        """Loads in the config file from config path provided in `__init__`
+            looking for api key, cap limit and warn limit.
         """
-        if self.args.config is not None:
-            path = self.args.config
+        if self.config is not None:
+            path = self.config
         else:
             path = os.path.expanduser(CONFIG_PATH)
 
@@ -73,17 +85,8 @@ class Tekuila():
         else:
             print("Config file does not exist.", file=sys.stderr)
 
-        # Allow override with args
-        if self.args.API is not None:
-            self.api = self.args.API
-        if self.args.cap is not None:
-            self.cap = self.args.cap
-        if self.args.warn is not None:
-            self.warn_ratio = self.args.warn
-        self.verbose = self.args.verbose
-
     def fetch_data(self):
-        """Pull JSON data from ISP api url using API key pulled from config
+        """Pull JSON data from TekSavvy api url using API key pulled from config
         file set by user.
         """
         if self.api is None:
@@ -103,7 +106,8 @@ class Tekuila():
     def check_cap(self):
         """Check if cap exists, if so check if download total has been exceeded
         based on fetched results.
-        returns True if exceeded false otherwise.
+
+        :returns: True if exceeded False otherwise.
         """
         if self.cap is not None:
             if self.download_total > self.cap:
@@ -115,7 +119,8 @@ class Tekuila():
     def check_warn(self):
         """If cap and warn limit are set, check if the user has passed the set
         threshold set in the config file.
-        returns True if exceeded, false otherwise.
+
+        :returns: True if exceeded, False otherwise.
         """
         if self.cap is not None and self.warn_ratio is not None:
             if (self.download_total/self.cap) > self.warn_ratio:
@@ -125,10 +130,10 @@ class Tekuila():
                 return False
 
     def print_data(self, verbose=False):
-        """Prints the data pulled from the JSON results.
+        """Prints the data pulled from the JSON results. Can be forced or
+        defaulted to print if `verbose` is set in `__init__`
 
-        verbose: default false, force print details.
-        return: None
+        :param verbose: Print details.
         """
         if self.data is not None:
             peakdl = self.data["value"][0]["OnPeakDownload"]
@@ -157,15 +162,17 @@ def main():
     ret = 0  # EOK
     parse = argparse.ArgumentParser(description='Check TekSavvy Cap')
     parse.add_argument("-c", "--config", help="Alternative config file")
-    parse.add_argument("--cap", help="Your cap in GB")
-    parse.add_argument("--API", help="API Key")
+    parse.add_argument("--cap", help="Your cap in GB, causes nonzero return"
+                                     " code if exceeded")
+    parse.add_argument("--api", help="API Key")
     parse.add_argument("--warn", help="Warn ratio against data cap, "
-                                       "causes nonzero return code")
+                                      "causes nonzero return code if exceeded"
+                                      ", in 0.1 increments to 1.0")
     parse.add_argument("-v", "--verbose", action="store_true",
                         help="Show output, don't just use return code")
 
     args = parse.parse_args()
-    tekq = Tekuila(args)
+    tekq = Tekuila(args.config, args.api, args.cap, args.warn, args.verbose)
     cap_warn = tekq.check_cap()
     ratio_warn = tekq.check_warn()
 
