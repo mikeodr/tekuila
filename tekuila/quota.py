@@ -37,7 +37,7 @@ API_URL = '/web/Usage/UsageSummaryRecords?$filter=IsCurrent%20eq%20true'
 CONFIG_PATH = '~/.tekuila'
 
 
-class Tekuila():
+class Tekuila:
     """Parse the ISP quota API and act upon the results. """
     def __init__(self, config=CONFIG_PATH, apikey=None, cap=None, warn=None,
                  verbose=False):
