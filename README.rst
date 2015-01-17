@@ -35,7 +35,7 @@ Or, if you wish to install the latest from source::
 API Usage
 =========
 
-Documentation comming soon.
+`Readthedocs <http://tekuila.readthedocs.org/en/latest/>`_.
 
 Console Usage
 =============
