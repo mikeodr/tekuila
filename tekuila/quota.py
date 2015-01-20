@@ -39,12 +39,10 @@ CONFIG_PATH = '~/.tekuila'
 
 class Tekuila:
     """Parse the ISP quota API and act upon the results. """
-    def __init__(self, config=CONFIG_PATH, apikey=None, cap=None, warn=None,
+    def __init__(self, apikey=None, cap=None, warn_ratio=None,
                  verbose=False):
         """Construct a new fetch/parser to check cap and warn levels.
 
-        :param config: Path to config file to parse for API key, warn and cap
-            variables.
         :param apikey: API key for TekSavvy, acquired from
             https://myaccount.teksavvy.com/ApiKey/ApiKeyManagement
         :param cap: Your cap in GB
@@ -54,34 +52,53 @@ class Tekuila:
         """
         self.api = apikey
         self.cap = cap
-        self.warn_ratio = warn
+        self.warn_ratio = warn_ratio
         self.verbose = verbose
-        self.config = config
         self.data = None
         self.download_total = None
 
-        self.load_config()
-        self.fetch_data()
-        self.print_data()
+        if self.warn_ratio is not None:
+            self.warn_ratio = float(self.warn_ratio)
+        if self.cap is not None:
+            self.cap = float(self.cap)
 
-    def load_config(self):
-        """Loads in the config file from config path provided in `__init__`
-            looking for api key, cap limit and warn limit.
+    def load_config(self, config_path=CONFIG_PATH, override=False):
+        """Loads in the config file from config path provided, looking
+            for api key, cap limit and warn limit.
+
+        :param config: Path to config file to parse for API key, warn and cap
+            variables.
+        :param override: Boolean to override values passed on ``__init__``.
+            True to replace all, false to replace those that are None.
         """
-        if self.config is not None:
-            path = self.config
-        else:
-            path = os.path.expanduser(CONFIG_PATH)
+        api = None
+        cap = None
+        warn_ratio = None
+
+        path = os.path.expanduser(config_path)
 
         if os.path.isfile(path):
             config = configobj.ConfigObj(path)
 
             if "API" in config:
-                self.api = config["API"]
+                api = config["API"]
             if "CAP" in config:
-                self.cap = float(config["CAP"])
+                cap = float(config["CAP"])
             if "WARN_RATIO" in config:
-                self.warn_ratio = float(config["WARN_RATIO"])
+                warn_ratio = float(config["WARN_RATIO"])
+
+            if override is True:
+                self.api = api
+                self.cap = cap
+                self.warn_ratio = warn_ratio
+            else:
+                if self.api is None:
+                    self.api = api
+                if self.cap is None:
+                    self.cap = cap
+                if self.warn_ratio is None:
+                    self.warn_ratio = warn_ratio
+
         else:
             print("Config file does not exist.", file=sys.stderr)
 
@@ -111,7 +128,7 @@ class Tekuila:
         """
         if self.cap is not None:
             if self.download_total > self.cap:
-                print("Cap exceeded %d/%d", self.download_total, self.cap)
+                print("Cap exceeded", self.download_total, "/", self.cap)
                 return True
             else:
                 return False
@@ -123,7 +140,7 @@ class Tekuila:
         :returns: True if exceeded, False otherwise.
         """
         if self.cap is not None and self.warn_ratio is not None:
-            if (self.download_total/self.cap) > self.warn_ratio:
+            if (self.download_total / self.cap) >= self.warn_ratio:
                 print("Warn level exceeded.")
                 return True
             else:
@@ -167,12 +184,22 @@ def main():
     parse.add_argument("--api", help="API Key")
     parse.add_argument("--warn", help="Warn ratio against data cap, "
                                       "causes nonzero return code if exceeded"
-                                      ", in 0.1 increments to 1.0")
+                                      ", in range 0.1 to 1.0")
     parse.add_argument("-v", "--verbose", action="store_true",
                        help="Show output, don't just use return code")
 
     args = parse.parse_args()
-    tekq = Tekuila(args.config, args.api, args.cap, args.warn, args.verbose)
+
+    tekq = Tekuila(args.api, args.cap, args.warn, args.verbose)
+    if args.config is not None:
+        tekq.load_config(args.config)
+    else:
+        tekq.load_config()
+
+    tekq.fetch_data()
+    tekq.print_data()
+
+    # Check if over ratio/cap
     cap_warn = tekq.check_cap()
     ratio_warn = tekq.check_warn()
 
