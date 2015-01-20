@@ -64,7 +64,7 @@ class Tekuila:
 
     def load_config(self, config_path=CONFIG_PATH, override=False):
         """Loads in the config file from config path provided, looking
-            for api key, cap limit and warn limit.
+        for api key, cap limit and warn limit.
 
         :param config: Path to config file to parse for API key, warn and cap
             variables.
