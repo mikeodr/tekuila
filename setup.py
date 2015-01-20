@@ -6,7 +6,7 @@ def readme():
         return f.read()
 
 setup(name='tekuila',
-      version='0.1.3',
+      version='1.0.0',
       description='Script for checking TekSavvy Quota',
       long_description=readme(),
       url='https://github.com/mikeodr/tekuila',
