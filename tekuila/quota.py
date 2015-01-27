@@ -120,28 +120,32 @@ class Tekuila:
         self.data = json.loads(json_data)
         self.download_total = float(self.data["value"][0]["OnPeakDownload"])
 
-    def check_cap(self):
+    def check_cap(self, verbose=False):
         """Check if cap exists, if so check if download total has been exceeded
         based on fetched results.
 
+        :param verbose: Force print and warnings or errors.
         :returns: True if exceeded False otherwise.
         """
         if self.cap is not None:
             if self.download_total > self.cap:
-                print("Cap exceeded", self.download_total, "/", self.cap)
+                if self.verbose or verbose:
+                    print("Cap exceeded", self.download_total, "/", self.cap)
                 return True
             else:
                 return False
 
-    def check_warn(self):
+    def check_warn(self, verbose=False):
         """If cap and warn limit are set, check if the user has passed the set
         threshold set in the config file.
 
+        :param verbose: Force print any warnings or errors.
         :returns: True if exceeded, False otherwise.
         """
         if self.cap is not None and self.warn_ratio is not None:
             if (self.download_total / self.cap) >= self.warn_ratio:
-                print("Warn level exceeded.")
+                if self.verbose or verbose:
+                    print("Warn level exceeded.")
                 return True
             else:
                 return False
