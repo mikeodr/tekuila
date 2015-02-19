@@ -1,11 +1,27 @@
-=============
 tekuila
 =============
 
+Interface for querying your TekSavvy download quota
 "Have you had to much to download?"
+
+.. image:: https://pypip.in/v/tekuila/badge.png
+        :target: https://pypi.python.org/pypi/tekuila/
+        :alt: Latest Version
+.. image:: https://pypip.in/d/tekuila/badge.png
+        :target: https://pypi.python.org/pypi/tekuila/
+        :alt: Downloads
+.. image:: https://pypip.in/license/tekuila/badge.png
+        :target: https://pypi.python.org/pypi/tekuila/
+        :alt: License
 
 .. image:: https://travis-ci.org/mikeodr/tekuila.svg?branch=master
     :target: https://travis-ci.org/mikeodr/tekuila
+    :alt: Build Status
+
+Versions
+--------
+
+Works with python 2.6 - 3.4
 
 Pull your TekSavvy Quota and act on it.
 
@@ -20,7 +36,7 @@ Place the following variables within the config file::
     WARN_RATIO=<ratio % to warn in 0.1 increments up to 1.0>
 
 Installation
-============
+------------
 
 To install, run the following::
 
@@ -33,12 +49,12 @@ Or, if you wish to install the latest from source::
     python setup.py install
 
 API Usage
-=========
+---------
 
 `Readthedocs <http://tekuila.readthedocs.org/en/latest/>`_.
 
 Console Usage
-=============
+-------------
 
 Console command help::
 
@@ -58,7 +74,7 @@ Console command help::
       -v, --verbose         Show output, don't just use return code
 
 Pull Requests and Issues
-========================
+------------------------
 
 Pull requests very much welcome.
 Check that it complies with pep8, please make sure the documentation builds.
@@ -68,5 +84,5 @@ messages be detailed. See Tim Pope's excellent `guide
 <http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html>`_.
 
 License
-=======
+-------
 GPLv2
