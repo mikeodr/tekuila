@@ -4,19 +4,23 @@ tekuila
 Interface for querying your TekSavvy download quota
 "Have you had to much to download?"
 
-.. image:: https://pypip.in/v/tekuila/badge.png
-        :target: https://pypi.python.org/pypi/tekuila/
-        :alt: Latest Version
-.. image:: https://pypip.in/d/tekuila/badge.png
-        :target: https://pypi.python.org/pypi/tekuila/
-        :alt: Downloads
-.. image:: https://pypip.in/license/tekuila/badge.png
+.. image:: https://img.shields.io/travis/mikeodr/tekuila.svg
+        :target: https://travis-ci.org/mikeodr/tekuila
+        :alt: Build Status
+
+.. image:: https://img.shields.io/pypi/l/tekuila.svg
         :target: https://pypi.python.org/pypi/tekuila/
         :alt: License
+.. image:: https://img.shields.io/pypi/v/tekuila.png
+        :target: https://pypi.python.org/pypi/tekuila/
+        :alt: Latest Version
+.. image:: https://img.shields.io/github/release/mikeodr/tekuila.svg
+        :target: https://github.com/mikeodr/tekuila/releases
+        :alt: Latest Version
+.. image:: https://img.shields.io/pypi/dm/tekuila.png
+        :target: https://pypi.python.org/pypi/tekuila/
+        :alt: Downloads
 
-.. image:: https://travis-ci.org/mikeodr/tekuila.svg?branch=master
-    :target: https://travis-ci.org/mikeodr/tekuila
-    :alt: Build Status
 
 Versions
 --------
