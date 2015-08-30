@@ -33,148 +33,16 @@ except:
     import http.client as httplib
 import errno
 
-API_URL = '/web/Usage/UsageSummaryRecords?$filter=IsCurrent%20eq%20true'
-CONFIG_PATH = '~/.tekuila'
-
-
-class Tekuila:
-    """Parse the ISP quota API and act upon the results. """
-    def __init__(self, apikey=None, cap=None, warn_ratio=None,
-                 verbose=False):
-        """Construct a new fetch/parser to check cap and warn levels.
-
-        :param apikey: API key for TekSavvy, acquired from
-            https://myaccount.teksavvy.com/ApiKey/ApiKeyManagement
-        :param cap: Your cap in GB
-        :param warn: The ratio you would like a warning to be returned from
-            `check_cap` in 0.0 to 1.0 ratio.
-        :param verbose: Boolean, True to print output.
-        """
-        self.api = apikey
-        self.cap = cap
-        self.warn_ratio = warn_ratio
-        self.verbose = verbose
-        self.data = None
-        self.download_total = None
-
-        if self.warn_ratio is not None:
-            self.warn_ratio = float(self.warn_ratio)
-        if self.cap is not None:
-            self.cap = float(self.cap)
-
-    def load_config(self, config_path=CONFIG_PATH, override=False):
-        """Loads in the config file from config path provided, looking
-        for api key, cap limit and warn limit.
-
-        :param config: Path to config file to parse for API key, warn and cap
-            variables.
-        :param override: Boolean to override values passed on ``__init__``.
-            True to replace all, false to replace those that are None.
-        """
-        api = None
-        cap = None
-        warn_ratio = None
-
-        path = os.path.expanduser(config_path)
-
-        if os.path.isfile(path):
-            config = configobj.ConfigObj(path)
-
-            if "API" in config:
-                api = config["API"]
-            if "CAP" in config:
-                cap = float(config["CAP"])
-            if "WARN_RATIO" in config:
-                warn_ratio = float(config["WARN_RATIO"])
-
-            if override is True:
-                self.api = api
-                self.cap = cap
-                self.warn_ratio = warn_ratio
-            else:
-                if self.api is None:
-                    self.api = api
-                if self.cap is None:
-                    self.cap = cap
-                if self.warn_ratio is None:
-                    self.warn_ratio = warn_ratio
-
-        else:
-            print("Config file does not exist.", file=sys.stderr)
-
-    def fetch_data(self):
-        """Pull JSON data from TekSavvy api url using API key pulled from config
-        file set by user.
-        """
-        if self.api is None:
-            print("No API key provided", file=sys.stderr)
-            return errno.ENOENT
-
-        headers = {"TekSavvy-APIKey": self.api}
-        conn = httplib.HTTPSConnection("api.teksavvy.com")
-        conn.request('GET',
-                     API_URL,
-                     '', headers)
-        response = conn.getresponse()
-        json_data = response.read()
-        self.data = json.loads(json_data)
-        self.download_total = float(self.data["value"][0]["OnPeakDownload"])
-
-    def check_cap(self, verbose=False):
-        """Check if cap exists, if so check if download total has been exceeded
-        based on fetched results.
-
-        :param verbose: Force print and warnings or errors.
-        :returns: True if exceeded False otherwise.
-        """
-        if self.cap is not None:
-            if self.download_total > self.cap:
-                if self.verbose or verbose:
-                    print("Cap exceeded", self.download_total, "/", self.cap)
-                return True
-            else:
-                return False
-
-    def check_warn(self, verbose=False):
-        """If cap and warn limit are set, check if the user has passed the set
-        threshold set in the config file.
-
-        :param verbose: Force print any warnings or errors.
-        :returns: True if exceeded, False otherwise.
-        """
-        if self.cap is not None and self.warn_ratio is not None:
-            if (self.download_total / self.cap) >= self.warn_ratio:
-                if self.verbose or verbose:
-                    print("Warn level exceeded.")
-                return True
-            else:
-                return False
-
-    def print_data(self, verbose=False):
-        """Prints the data pulled from the JSON results. Can be forced or
-        defaulted to print if `verbose` is set in `__init__`
-
-        :param verbose: Print details.
-        """
-        if self.data is not None:
-            peakdl = self.data["value"][0]["OnPeakDownload"]
-            peakul = self.data["value"][0]["OnPeakUpload"]
-            offpeakdl = self.data["value"][0]["OffPeakDownload"]
-            offpeakul = self.data["value"][0]["OffPeakUpload"]
-            startdate = self.data["value"][0]["StartDate"]
-            enddate = self.data["value"][0]["EndDate"]
-
-            if self.verbose or verbose:
-                print("OnPeakDownload:", peakdl)
-                print("OnPeakUpload:", peakul)
-                print("OffPeakDownload:", offpeakdl)
-                print("OffPeakUpload:", offpeakul)
-                print("Start Date:", startdate)
-                print("End Date:", enddate)
+try:
+    import teksavvy
+    import startca
+except ImportError:
+    import tekuila.teksavvy
+    import tekuila.startca
 
 
 def main():
-    """Main function to parse args and call init of Tekuila class.
+    """Main function to parse args and call init of Tekuila API class.
     Also calls all necessary functions if run as a command line application.
 
     :returns: EOK on no errors and under the cap/warn settings.
@@ -191,23 +59,34 @@ def main():
                                       ", in range 0.1 to 1.0")
     parse.add_argument("-v", "--verbose", action="store_true",
                        help="Show output, don't just use return code")
+    parse.add_argument("-s", "--startca", action="store_true",
+                       help="Use StartCA instead of TekSavvy API")
 
     args = parse.parse_args()
 
-    tekq = Tekuila(args.api, args.cap, args.warn, args.verbose)
-    if args.config is not None:
-        tekq.load_config(args.config)
+    api = None
+    # Select the API to use
+    if args.startca:
+        api = startca.StartCA(args.api, args.cap, args.warn, args.verbose)
     else:
-        tekq.load_config()
+        api = teksavvy.Teksavvy(args.api, args.cap, args.warn, args.verbose)
 
-    tekq.fetch_data()
-    tekq.print_data()
+    if api is not None:
+        if args.config is not None:
+            api.load_config(args.config)
+        else:
+            api.load_config()
 
-    # Check if over ratio/cap
-    cap_warn = tekq.check_cap()
-    ratio_warn = tekq.check_warn()
+        api.fetch_data()
+        api.print_data()
 
-    if cap_warn or ratio_warn:
-        ret = errno.ENOMEM  # "You've had to much to download!"
+        # Check if over ratio/cap
+        cap_warn = api.check_cap()
+        ratio_warn = api.check_warn()
+
+        if cap_warn or ratio_warn:
+            ret = errno.ENOMEM  # "You've had to much to download!"
+    else:
+        raise Exception("No API type selection")
 
     return ret
