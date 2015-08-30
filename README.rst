@@ -1,7 +1,8 @@
 tekuila
 =============
 
-Interface for querying your TekSavvy download quota
+Interface for querying your ISP download quota.
+
 "Have you had to much to download?"
 
 .. image:: https://img.shields.io/travis/mikeodr/tekuila.svg
@@ -27,7 +28,12 @@ Versions
 
 Works with python 2.6 - 3.4
 
-Pull your TekSavvy Quota and act on it.
+Pull your ISP Quota and act on it.
+
+Supported ISPs:
+
+- TekSavvy
+- Start.ca
 
 To avoid using command line flags create a config file at::
 
@@ -76,6 +82,7 @@ Console command help::
       --warn WARN           Warn ratio against data cap, causes nonzero return
                             code
       -v, --verbose         Show output, don't just use return code
+      -s, --startca         Use StartCA instead of TekSavvy API
 
 Pull Requests and Issues
 ------------------------
