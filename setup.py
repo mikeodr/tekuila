@@ -6,8 +6,8 @@ def readme():
         return f.read()
 
 setup(name='tekuila',
-      version='1.0.0',
-      description='Script for checking TekSavvy Quota',
+      version='2.0.0',
+      description='Script for checking TekSavvy (and other ISP) Quotas',
       long_description=readme(),
       url='https://github.com/mikeodr/tekuila',
       author="Mike O'Driscoll",
@@ -17,5 +17,6 @@ setup(name='tekuila',
       scripts=['bin/tekuila'],
       install_requires=[
               "configobj",
+              "xmltodict"
       ],
       zip_safe=False)
