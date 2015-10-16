@@ -21,16 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 """
 
 from __future__ import print_function
-import os
-import sys
-import json
-import configobj
 import argparse
-# Support both python 2 and 3
-try:
-    import httplib
-except:
-    import http.client as httplib
 import errno
 
 try:

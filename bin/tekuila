@@ -23,5 +23,4 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 from tekuila.quota import main
 import sys
 
-RET = main()
-sys.exit(RET)
+sys.exit(main())

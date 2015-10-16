@@ -6,7 +6,7 @@ def readme():
         return f.read()
 
 setup(name='tekuila',
-      version='2.0.0',
+      version='2.0.1',
       description='Script for checking TekSavvy (and other ISP) Quotas',
       long_description=readme(),
       url='https://github.com/mikeodr/tekuila',

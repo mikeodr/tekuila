@@ -22,7 +22,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 from __future__ import print_function
 import abc
-import sys
 import os
 import configobj
 
@@ -100,9 +99,6 @@ class Tekuila(object):
                     self.cap = cap
                 if self.warn_ratio is None:
                     self.warn_ratio = warn_ratio
-
-        else:
-            print("Config file does not exist.", file=sys.stderr)
 
     @abc.abstractmethod
     def fetch_data(self):
