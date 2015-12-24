@@ -32,7 +32,7 @@ except ImportError:
 # Support both python 2 and 3
 try:
     import httplib
-except:
+except ImportError:
     import http.client as httplib
 
 
@@ -59,7 +59,7 @@ class Teksavvy(Tekuila):
                      '', headers)
         response = conn.getresponse()
         json_data = response.read()
-        self.data = json.loads(json_data)
+        self.data = json.loads(json_data.decode(encoding='UTF-8'))
         self.set_download_total(float(self.data["value"][0]["OnPeakDownload"]))
 
     def print_data(self, verbose=False):

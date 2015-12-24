@@ -28,8 +28,8 @@ try:
     import teksavvy
     import startca
 except ImportError:
-    import tekuila.teksavvy
-    import tekuila.startca
+    import tekuila.teksavvy as teksavvy
+    import tekuila.startca as startca
 
 
 def main():

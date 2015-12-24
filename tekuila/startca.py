@@ -32,7 +32,7 @@ except ImportError:
 # Support both python 2 and 3
 try:
     import httplib
-except:
+except ImportError:
     import http.client as httplib
 
 
