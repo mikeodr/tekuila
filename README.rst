@@ -104,6 +104,6 @@ GPLv2
         :target: https://pypi.python.org/pypi/tekuila/
         :alt: Downloads on Pypi
 
-.. |landscape| image:: https://landscape.io/github/mikeodr/tekuila/py3_doc_fixes/landscape.svg?style=flat
-   :target: https://landscape.io/github/mikeodr/tekuila/py3_doc_fixes
+.. |landscape| image:: https://landscape.io/github/mikeodr/tekuila/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/mikeodr/tekuila/master
    :alt: Code Health
