@@ -5,23 +5,7 @@ Interface for querying your ISP download quota.
 
 "Have you had to much to download?"
 
-.. image:: https://img.shields.io/travis/mikeodr/tekuila.svg
-        :target: https://travis-ci.org/mikeodr/tekuila
-        :alt: Build Status
-
-.. image:: https://img.shields.io/pypi/l/tekuila.svg
-        :target: https://pypi.python.org/pypi/tekuila/
-        :alt: License
-.. image:: https://img.shields.io/pypi/v/tekuila.png
-        :target: https://pypi.python.org/pypi/tekuila/
-        :alt: Latest Version
-.. image:: https://img.shields.io/github/release/mikeodr/tekuila.svg
-        :target: https://github.com/mikeodr/tekuila/releases
-        :alt: Latest Version
-.. image:: https://img.shields.io/pypi/dm/tekuila.png
-        :target: https://pypi.python.org/pypi/tekuila/
-        :alt: Downloads
-
+|travis| |version| |ghversion| |pypidownloads| |landscape| |license|
 
 Versions
 --------
@@ -61,7 +45,7 @@ Or, if you wish to install the latest from source::
 API Usage
 ---------
 
-`Readthedocs <http://tekuila.readthedocs.org/en/latest/>`_.
+`ReadTheDocs`_.
 
 Console Usage
 -------------
@@ -91,9 +75,35 @@ Pull requests very much welcome.
 Check that it complies with pep8, please make sure the documentation builds.
 
 Please use elementary commits vs big commits and try and have your commit
-messages be detailed. See Tim Pope's excellent `guide
-<http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html>`_.
+messages be detailed. See Tim Pope's excellent `Guide`_.
 
 License
 -------
 GPLv2
+
+.. _Guide: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
+.. _ReadTheDocs: http://tekuila.readthedocs.org/en/latest/
+
+.. |travis| image:: https://img.shields.io/travis/mikeodr/tekuila.svg
+        :target: https://travis-ci.org/mikeodr/tekuila
+        :alt: Build Status
+
+.. |license| image:: https://img.shields.io/pypi/l/tekuila.svg
+        :target: https://pypi.python.org/pypi/tekuila/
+        :alt: License
+
+.. |version| image:: https://img.shields.io/pypi/v/tekuila.png
+        :target: https://pypi.python.org/pypi/tekuila/
+        :alt: Latest Version released on PyPi
+
+.. |ghversion| image:: https://img.shields.io/github/release/mikeodr/tekuila.svg
+        :target: https://github.com/mikeodr/tekuila/releases
+        :alt: Latest Version released on Github
+
+.. |pypidownloads| image:: https://img.shields.io/pypi/dm/tekuila.png
+        :target: https://pypi.python.org/pypi/tekuila/
+        :alt: Downloads on Pypi
+
+.. |landscape| image:: https://landscape.io/github/mikeodr/tekuila/py3_doc_fixes/landscape.svg?style=flat
+   :target: https://landscape.io/github/mikeodr/tekuila/py3_doc_fixes
+   :alt: Code Health

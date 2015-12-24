@@ -20,7 +20,7 @@ master_doc = 'index'
 project = u'tekuila'
 copyright = u'2015, Mike O\'Driscoll'
 
-version = '2.0.1'
+version = '2.0.2'
 release = version
 
 language = 'en'
