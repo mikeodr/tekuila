@@ -102,18 +102,29 @@ class Tekuila(object):
 
     @abc.abstractmethod
     def fetch_data(self):
+        """Child class must implement.
+        Fetches the data from the ISPs API URI
+        and set's appropriate values see set_download_data.
+        """
         raise NotImplementedError('Fetch Method not implemented!')
 
     @abc.abstractmethod
     def print_data(self, verbose=False):
-        """Prints the data pulled from the JSON results. Can be forced or
-        defaulted to print if `verbose` is set in `__init__`
+        """Child class must implement.
+        Prints the data pulled from the ISP
+        results fetched from the API. Can be forced or defaulted to print if
+        `verbose` is set in `__init__`
 
         :param verbose: Print details.
         """
         raise NotImplementedError('Print Method not implemented!')
 
     def set_download_total(self, total):
+        """Set the total current download as it contributes towards the ISPs
+        cap quota.
+
+        :param total: The number of GBs downloaded ex: 33.23
+        """
         self.download_total = total
 
     def check_cap(self, verbose=False):
