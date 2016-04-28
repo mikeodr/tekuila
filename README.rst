@@ -82,7 +82,7 @@ License
 GPLv2
 
 .. _Guide: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
-.. _ReadTheDocs: http://tekuila.readthedocs.org/en/latest/
+.. _ReadTheDocs: http://tekuila.readthedocs.io/en/latest/
 
 .. |travis| image:: https://img.shields.io/travis/mikeodr/tekuila.svg
         :target: https://travis-ci.org/mikeodr/tekuila
