@@ -3,7 +3,7 @@
 startca.py
 Fetch and act upon your ISPs quota limits.
 
-Copyright (C) 2014  Mike O'Driscoll <mike@mikeodriscoll.ca>
+Copyright (C) 2018  Mike O'Driscoll <mike@mikeodriscoll.ca>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,19 +21,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 """
 
 from __future__ import print_function
+import http.client as httplib
+import sys
 import xmltodict
-# Support python 2 and 3
-try:
-    from tekuila import Tekuila
-except ImportError:
-    from .tekuila import Tekuila
-
-
-# Support both python 2 and 3
-try:
-    import httplib
-except ImportError:
-    import http.client as httplib
+from tekuila.tekuila import Tekuila
+from xml.parsers.expat import ExpatError
 
 
 class StartCA(Tekuila):
@@ -42,21 +34,36 @@ class StartCA(Tekuila):
 
     def __init__(self, apikey=None, cap=None, warn_ratio=None, verbose=False):
         super(self.__class__, self).__init__(apikey, cap, warn_ratio, verbose)
-        self.data = None
+        self._data = None
 
     def fetch_data(self):
-        """Pull XML data from Start.ca API url using API key"""
-        conn = httplib.HTTPConnection("www.start.ca")
-        conn.request('GET',
-                     StartCA.API_URL + self.get_api_key())
-        response = conn.getresponse()
-        xml_data = response.read()
-        self.data = xmltodict.parse(xml_data)
-        download_total = self.data['usage']['used']['download']
-        download_total = self.b_to_GB(float(download_total))
-        self.set_download_total(download_total)
+        """Pull XML data from Start.ca API url using API key.
+        Store it within the class for processing.
+        """
+        if self.api_key is None:
+            print("No API key provided", file=sys.stderr)
+            return False
 
-    def b_to_GB(self, value):
+        conn = httplib.HTTPSConnection("www.start.ca")
+        conn.request('GET',
+                     self.API_URL + self.api_key)
+        response = conn.getresponse()
+        if response.status == httplib.OK:
+            xml_data = response.read()
+            try:
+                self._data = xmltodict.parse(xml_data)
+            except ExpatError:
+                return False
+            download_total = self._data['usage']['used']['download']
+            download_total = self.b_to_GB(float(download_total))
+            self._download_total = download_total
+            return True
+        else:
+            print("Data fetch failed. HTTP: %s" % response.reason, file=sys.stderr)
+            return False
+
+    @staticmethod
+    def b_to_GB(value):
         """Convert from bytes to GB.
 
         :param value: The value in bytes to convert to GB.
@@ -70,13 +77,13 @@ class StartCA(Tekuila):
 
         :param verbose: Print details.
         """
-        if self.data is not None:
-            used_dl = self.b_to_GB(self.data['usage']['used']['download'])
-            used_ul = self.b_to_GB(self.data['usage']['used']['upload'])
-            grace_dl = self.b_to_GB(self.data['usage']['grace']['download'])
-            grace_ul = self.b_to_GB(self.data['usage']['grace']['upload'])
-            total_dl = self.b_to_GB(self.data['usage']['total']['download'])
-            total_ul = self.b_to_GB(self.data['usage']['total']['upload'])
+        if self._data is not None:
+            used_dl = self.b_to_GB(self._data['usage']['used']['download'])
+            used_ul = self.b_to_GB(self._data['usage']['used']['upload'])
+            grace_dl = self.b_to_GB(self._data['usage']['grace']['download'])
+            grace_ul = self.b_to_GB(self._data['usage']['grace']['upload'])
+            total_dl = self.b_to_GB(self._data['usage']['total']['download'])
+            total_ul = self.b_to_GB(self._data['usage']['total']['upload'])
 
             if self.verbose or verbose:
                 print("Used Download: %s GB" % used_dl)

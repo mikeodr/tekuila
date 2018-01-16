@@ -5,12 +5,12 @@ Interface for querying your ISP download quota.
 
 "Have you had to much to download?"
 
-|travis| |version| |ghversion| |pypidownloads| |landscape| |license|
+|travis| |version| |ghversion| |landscape| |license|
 
 Versions
 --------
 
-Works with python 2.6 - 3.4
+Works with python 2.7, 3.5
 
 Pull your ISP Quota and act on it.
 
@@ -99,10 +99,6 @@ GPLv2
 .. |ghversion| image:: https://img.shields.io/github/release/mikeodr/tekuila.svg
         :target: https://github.com/mikeodr/tekuila/releases
         :alt: Latest Version released on Github
-
-.. |pypidownloads| image:: https://img.shields.io/pypi/dm/tekuila.png
-        :target: https://pypi.python.org/pypi/tekuila/
-        :alt: Downloads on Pypi
 
 .. |landscape| image:: https://landscape.io/github/mikeodr/tekuila/master/landscape.svg?style=flat
    :target: https://landscape.io/github/mikeodr/tekuila/master

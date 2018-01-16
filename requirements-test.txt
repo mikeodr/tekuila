@@ -1,0 +1,5 @@
+configobj
+mock
+pytest
+tox
+xmltodict

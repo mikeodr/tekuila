@@ -1,9 +1,8 @@
-#!/usr/bin/env python
 """
 tekuila.py
 Fetch and act upon your ISPs quota limits.
 
-Copyright (C) 2014  Mike O'Driscoll <mike@mikeodriscoll.ca>
+Copyright (C) 2018  Mike O'Driscoll <mike@mikeodriscoll.ca>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,16 +20,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 """
 
 from __future__ import print_function
-import abc
 import os
 import configobj
-
-CONFIG_PATH = '~/.tekuila'
 
 
 class Tekuila(object):
     """Base class for parsing the ISP quota API and act upon the results."""
-    __metaclass__ = abc.ABCMeta
+    DEFAULT_CONFIG_PATH = os.path.expanduser('~/.tekuila')
 
     def __init__(self, apikey=None, cap=None, warn_ratio=None,
                  verbose=False):
@@ -45,41 +41,31 @@ class Tekuila(object):
         self.api_key = apikey
         self.cap = cap
         self.warn_ratio = warn_ratio
+        self._data = None
+        self._download_total = None
         self.verbose = verbose
-        self.data = None
-        self.download_total = None
 
         if self.warn_ratio is not None:
             self.warn_ratio = float(self.warn_ratio)
         if self.cap is not None:
             self.cap = float(self.cap)
 
-    def get_api_key(self):
-        return self.api_key
-
-    def get_warn_ratio(self):
-        return self.warn_ratio
-
-    def get_cap(self):
-        return self.cap
-
-    def load_config(self, config_path=CONFIG_PATH, override=False):
+    def load_config(self, config_path=DEFAULT_CONFIG_PATH):
         """Loads in the config file from config path provided, looking
         for api key, cap limit and warn limit.
 
-        :param config: Path to config file to parse for API key, warn and cap
+        :param config_path: Path to config file to parse for API key, warn and cap
             variables.
-        :param override: Boolean to override values passed on ``__init__``.
-            True to replace all, false to replace those that are None.
         """
         api = None
         cap = None
         warn_ratio = None
 
-        path = os.path.expanduser(config_path)
+        path = os.path.abspath(config_path)
 
         if os.path.isfile(path):
             config = configobj.ConfigObj(path)
+            print(config)
 
             if "API" in config:
                 api = config["API"]
@@ -88,19 +74,13 @@ class Tekuila(object):
             if "WARN_RATIO" in config:
                 warn_ratio = float(config["WARN_RATIO"])
 
-            if override is True:
-                self.api = api
+            if self.api_key is None:
+                self.api_key = api
+            if self.cap is None:
                 self.cap = cap
+            if self.warn_ratio is None:
                 self.warn_ratio = warn_ratio
-            else:
-                if self.api_key is None:
-                    self.api_key = api
-                if self.cap is None:
-                    self.cap = cap
-                if self.warn_ratio is None:
-                    self.warn_ratio = warn_ratio
 
-    @abc.abstractmethod
     def fetch_data(self):
         """Child class must implement.
         Fetches the data from the ISPs API URI
@@ -108,7 +88,6 @@ class Tekuila(object):
         """
         raise NotImplementedError('Fetch Method not implemented!')
 
-    @abc.abstractmethod
     def print_data(self, verbose=False):
         """Child class must implement.
         Prints the data pulled from the ISP
@@ -119,14 +98,6 @@ class Tekuila(object):
         """
         raise NotImplementedError('Print Method not implemented!')
 
-    def set_download_total(self, total):
-        """Set the total current download as it contributes towards the ISPs
-        cap quota.
-
-        :param total: The number of GBs downloaded ex: 33.23
-        """
-        self.download_total = total
-
     def check_cap(self, verbose=False):
         """Check if cap exists, if so check if download total has been exceeded
         based on fetched results.
@@ -135,9 +106,9 @@ class Tekuila(object):
         :returns: True if exceeded False otherwise.
         """
         if self.cap is not None:
-            if self.download_total > self.cap:
+            if self._download_total > self.cap:
                 if self.verbose or verbose:
-                    print("Cap exceeded", self.download_total, "/", self.cap)
+                    print("Cap exceeded", self._download_total, "/", self.cap)
                 return True
             else:
                 return False
@@ -150,7 +121,7 @@ class Tekuila(object):
         :returns: True if exceeded, False otherwise.
         """
         if self.cap is not None and self.warn_ratio is not None:
-            if (self.download_total / self.cap) >= self.warn_ratio:
+            if (self._download_total / self.cap) >= self.warn_ratio:
                 if self.verbose or verbose:
                     print("Warn level exceeded.")
                 return True

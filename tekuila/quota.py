@@ -1,9 +1,8 @@
-#!/usr/bin/env python
 """
 quota.py
 Fetch and act upon your ISPs quota limits.
 
-Copyright (C) 2014  Mike O'Driscoll <mike@mikeodriscoll.ca>
+Copyright (C) 2018  Mike O'Driscoll <mike@mikeodriscoll.ca>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,14 +21,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 from __future__ import print_function
 import argparse
-import errno
-
-try:
-    import teksavvy
-    import startca
-except ImportError:
-    import tekuila.teksavvy as teksavvy
-    import tekuila.startca as startca
+import sys
+from pkg_resources import get_distribution
+from isp.startca import StartCA
+from isp.teksavvy import Teksavvy
 
 
 def main():
@@ -39,7 +34,8 @@ def main():
     :returns: EOK on no errors and under the cap/warn settings.
         Otherwise non-zero when errors or over cap level.
     """
-    ret = 0  # EOK
+
+    ver = get_distribution('tekuila').version
     parse = argparse.ArgumentParser(description='Check TekSavvy Cap')
     parse.add_argument("-c", "--config", help="Alternative config file")
     parse.add_argument("--cap", help="Your cap in GB, causes nonzero return"
@@ -52,15 +48,16 @@ def main():
                        help="Show output, don't just use return code")
     parse.add_argument("-s", "--startca", action="store_true",
                        help="Use StartCA instead of TekSavvy API")
+    parse.add_argument('--version', action='version', version='%(prog)s ' + ver)
 
     args = parse.parse_args()
 
     api = None
     # Select the API to use
     if args.startca:
-        api = startca.StartCA(args.api, args.cap, args.warn, args.verbose)
+        api = StartCA(args.api, args.cap, args.warn, args.verbose)
     else:
-        api = teksavvy.Teksavvy(args.api, args.cap, args.warn, args.verbose)
+        api = Teksavvy(args.api, args.cap, args.warn, args.verbose)
 
     if api is not None:
         if args.config is not None:
@@ -68,7 +65,8 @@ def main():
         else:
             api.load_config()
 
-        api.fetch_data()
+        if not api.fetch_data():
+            return 1
         api.print_data()
 
         # Check if over ratio/cap
@@ -76,8 +74,9 @@ def main():
         ratio_warn = api.check_warn()
 
         if cap_warn or ratio_warn:
-            ret = errno.ENOMEM  # "You've had to much to download!"
+            return 1  # "You've had to much to download!"
     else:
-        raise Exception("No API type selection")
+        print("No API type selection", file=sys.stderr)
+        return 1
 
-    return ret
+    return 0

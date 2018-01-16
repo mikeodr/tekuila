@@ -1,11 +1,9 @@
 sudo: false
 language: python
 python:
-  - "2.6"
   - "2.7"
-  - "3.2"
-  - "3.3"
   - "3.4"
+  - "3.5"
 install:
-  - "pip install ."
-script: "tekuila --help"
+  - "pip install tox tox-travis"
+script: "tox"

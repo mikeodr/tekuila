@@ -1,1 +1,6 @@
 include README.rst
+include LICENSE
+recursive-include doc *.bat
+recursive-include doc *.py
+recursive-include doc *.rst
+recursive-include doc Makefile
