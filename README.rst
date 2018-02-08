@@ -5,19 +5,19 @@ Interface for querying your ISP download quota.
 
 "Have you had to much to download?"
 
-|travis| |version| |ghversion| |landscape| |license|
+|travis| |version| |ghversion| |license|
 
 Versions
 --------
 
-Works with python 2.7, 3.5
+Works with python 2.7, 3.4, 3.5
 
 Pull your ISP Quota and act on it.
 
 Supported ISPs:
 
-- TekSavvy
-- Start.ca
+- `TekSavvy`_
+- `Start.ca`_
 
 To avoid using command line flags create a config file at::
 
@@ -53,7 +53,8 @@ Console Usage
 Console command help::
 
     tekuila -h
-    usage: tekuila [-h] [-c CONFIG] [--cap CAP] [--API API] [--warn WARN] [-v]
+    usage: tekuila [-h] [-c CONFIG] [--cap CAP] [--api API] [--warn WARN] [-v]
+                   [-s] [--version]
 
     Check TekSavvy Cap
 
@@ -61,12 +62,13 @@ Console command help::
       -h, --help            show this help message and exit
       -c CONFIG, --config CONFIG
                             Alternative config file
-      --cap CAP             Your cap in GB
-      --API API             API Key
+      --cap CAP             Your cap in GB, causes nonzero return code if exceeded
+      --api API             API Key
       --warn WARN           Warn ratio against data cap, causes nonzero return
-                            code
+                            code if exceeded, in range 0.1 to 1.0
       -v, --verbose         Show output, don't just use return code
       -s, --startca         Use StartCA instead of TekSavvy API
+      --version             show program's version number and exit
 
 Pull Requests and Issues
 ------------------------
@@ -83,6 +85,8 @@ GPLv2
 
 .. _Guide: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
 .. _ReadTheDocs: http://tekuila.readthedocs.io/en/latest/
+.. _TekSavvy: https://teksavvy.com/
+.. _Start.ca: https://www.start.ca/
 
 .. |travis| image:: https://img.shields.io/travis/mikeodr/tekuila.svg
         :target: https://travis-ci.org/mikeodr/tekuila
@@ -99,7 +103,3 @@ GPLv2
 .. |ghversion| image:: https://img.shields.io/github/release/mikeodr/tekuila.svg
         :target: https://github.com/mikeodr/tekuila/releases
         :alt: Latest Version released on Github
-
-.. |landscape| image:: https://landscape.io/github/mikeodr/tekuila/master/landscape.svg?style=flat
-   :target: https://landscape.io/github/mikeodr/tekuila/master
-   :alt: Code Health
