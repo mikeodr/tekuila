@@ -6,15 +6,16 @@
 Welcome to tekuila's documentation!
 ===================================
 
+This is a simple Python library for parsing your ISPs download limits API.
+
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
-.. automodule:: tekuila
-
-.. autoclass:: tekuila.Tekuila
-   :members:
+   tekuila
+   isps
+   contributing
 
 Indices and tables
 ==================

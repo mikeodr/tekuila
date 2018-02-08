@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-
-import sys
 import os
-
-sys.path.insert(0, os.path.abspath(os.path.dirname("../")))
+import sys
+sys.path.insert(0, os.path.abspath('..'))
 
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.doctest',
-    'sphinx.ext.viewcode'
+    'sphinx.ext.coverage',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.githubpages',
+    'sphinx.ext.napoleon'
 ]
 
 autoclass_content = 'both'
@@ -20,7 +20,8 @@ master_doc = 'index'
 project = u'tekuila'
 copyright = u'2015, Mike O\'Driscoll'
 
-version = '2.0.2'
+from tekuila import __version__
+version = __version__
 release = version
 
 language = 'en'
@@ -36,6 +37,6 @@ man_pages = [
 
 texinfo_documents = [
   ('index', 'tekuila', u'tekuila Documentation',
-   u'Mike O\'Driscoll', 'tekuila', 'One line description of project.',
+   u'Mike O\'Driscoll', 'tekuila', 'API and console command for accessing your ISP quotas.',
    'Miscellaneous'),
 ]
