@@ -54,7 +54,6 @@ Off Peak Upload: 1.58 GB
 Start Date: 2018-01-01T00:00:00
 End Date: 2018-01-31T00:00:00
 '''
-        self.maxDiff = 99999999999
         with mock.patch('sys.stdout', new=StringIO()) as fake_stdout:
             tek.verbose = True
             tek.print_data()
