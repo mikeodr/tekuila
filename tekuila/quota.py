@@ -23,8 +23,12 @@ from __future__ import print_function
 import argparse
 import sys
 from pkg_resources import get_distribution
-from isp.startca import StartCA
-from isp.teksavvy import Teksavvy
+try:
+    from tekuila.isp.startca import StartCA
+    from tekuila.isp.teksavvy import Teksavvy
+except ImportError:
+    from isp.startca import StartCA
+    from isp.teksavvy import Teksavvy
 
 
 def main():
