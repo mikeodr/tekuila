@@ -30,7 +30,7 @@ from xml.parsers.expat import ExpatError
 
 class StartCA(Tekuila):
     """Fetch and parse Start.ca quota API"""
-    API_URL = '/support/usage/api?key='
+    API_URL = '/account/usage/api?key='
 
     def __init__(self, apikey=None, cap=None, warn_ratio=None, verbose=False):
         super(self.__class__, self).__init__(apikey, cap, warn_ratio, verbose)
