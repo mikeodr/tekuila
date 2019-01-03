@@ -1,5 +1,5 @@
 """
-test_teksavvy.py
+test_startca.py
 Fetch and act upon your ISPs quota limits.
 
 Copyright (C) 2018  Mike O'Driscoll <mike@mikeodriscoll.ca>
@@ -60,7 +60,12 @@ class TestStartCA(TestCase):
 </usage>
 '''
         sca = StartCA('NOT_A_KEY', 400, 0.75)
-        self.assertEqual(True, sca.fetch_data())
+        data = {u'usage': {
+                u'used': {u'download': u'0', u'upload': u'0'},
+                u'version': u'1.1',
+                u'grace': {u'download': u'239743945534', u'upload': u'4528123013'},
+                u'total': {u'download': u'239743945534', u'upload': u'4528123013'}}}
+        self.assertEqual(data, sca.fetch_data())
 
         expected = '''Used Download: 0.0 GB
 Used Upload: 0.0 GB
@@ -81,11 +86,11 @@ Total Upload: 4.528123013 GB
         mock_response.return_value.status = 400
 
         sca = StartCA('NOT_A_KEY', 400, 0.75)
-        self.assertEqual(False, sca.fetch_data())
+        self.assertIsNone(sca.fetch_data())
 
     def test_no_key(self):
         sca = StartCA(None, 0, 0)
-        self.assertEqual(False, sca.fetch_data())
+        self.assertIsNone(sca.fetch_data())
 
     @mock.patch('http.client.HTTPResponse')
     @mock.patch('http.client.HTTPSConnection')
@@ -96,4 +101,4 @@ Total Upload: 4.528123013 GB
         mock_response.return_value.status = 200
         mock_response.return_value.read.return_value = "not xml"
         sca = StartCA('NOT_A_KEY', 400, 0.75)
-        self.assertEqual(False, sca.fetch_data())
+        self.assertIsNone(sca.fetch_data())

@@ -43,10 +43,12 @@ class Teksavvy(Tekuila):
     def fetch_data(self):
         """Pull JSON data from TekSavvy api url using API key pulled from config
         file set by user.
+
+        :returns: None if error, copy of populated dict that is read if successful.
         """
         if self.api_key is None:
             print("No API key provided", file=sys.stderr)
-            return False
+            return None
 
         headers = {"TekSavvy-APIKey": self.api_key}
         conn = httplib.HTTPSConnection("api.teksavvy.com")
@@ -59,12 +61,12 @@ class Teksavvy(Tekuila):
             try:
                 self._data = json.loads(json_data)['value'][0]
             except JSONDecodeError:
-                return False
+                return None
             self._download_total = float(self._data['OnPeakDownload'])
-            return True
+            return self._data
         else:
             print("Data fetch failed. HTTP: %s" % response.reason, file=sys.stderr)
-            return False
+            return None
 
     def print_data(self, verbose=False):
         """Prints the data pulled from the JSON results. Can be forced or

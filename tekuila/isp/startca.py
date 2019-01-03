@@ -22,6 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 from __future__ import print_function
 import http.client as httplib
+from json import loads, dumps
 import sys
 import xmltodict
 from tekuila.tekuila import Tekuila
@@ -42,7 +43,7 @@ class StartCA(Tekuila):
         """
         if self.api_key is None:
             print("No API key provided", file=sys.stderr)
-            return False
+            return None
 
         conn = httplib.HTTPSConnection("www.start.ca")
         conn.request('GET',
@@ -53,14 +54,14 @@ class StartCA(Tekuila):
             try:
                 self._data = xmltodict.parse(xml_data)
             except ExpatError:
-                return False
+                return None
             download_total = self._data['usage']['used']['download']
             download_total = self.b_to_GB(float(download_total))
             self._download_total = download_total
-            return True
+            return loads(dumps(self._data))
         else:
             print("Data fetch failed. HTTP: %s" % response.reason, file=sys.stderr)
-            return False
+            return None
 
     @staticmethod
     def b_to_GB(value):

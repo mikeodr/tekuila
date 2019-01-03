@@ -46,7 +46,11 @@ class TestTekSavvy(TestCase):
     ]
 }'''
         tek = Teksavvy('NOT_A_KEY', 400, 0.75)
-        self.assertEqual(True, tek.fetch_data())
+        data = {u'OffPeakUpload': 1.58, u'StartDate': u'2018-01-01T00:00:00',
+                u'OID': u'999999', u'IsCurrent': True, u'OffPeakDownload': 36.24,
+                u'EndDate': u'2018-01-31T00:00:00',
+                u'OnPeakDownload': 226.75, u'OnPeakUpload': 8.82}
+        self.assertEqual(data, tek.fetch_data())
         expected = '''On Peak Download: 226.75 GB
 On Peak Upload: 8.82 GB
 Off Peak Download: 36.24 GB
@@ -66,11 +70,11 @@ End Date: 2018-01-31T00:00:00
         mock_response.return_value.status = 400
 
         tek = Teksavvy('NOT_A_KEY', 400, 0.75)
-        self.assertEqual(False, tek.fetch_data())
+        self.assertIsNone(tek.fetch_data())
 
     def test_no_key(self):
         tek = Teksavvy(None, 0, 0)
-        self.assertEqual(False, tek.fetch_data())
+        self.assertIsNone(tek.fetch_data())
 
     @mock.patch('http.client.HTTPResponse')
     @mock.patch('http.client.HTTPSConnection')
@@ -81,4 +85,4 @@ End Date: 2018-01-31T00:00:00
         mock_response.return_value.status = 200
         mock_response.return_value.read.return_value = "not json"
         tek = Teksavvy('NOT_A_KEY', 400, 0.75)
-        self.assertEqual(False, tek.fetch_data())
+        self.assertIsNone(tek.fetch_data())
