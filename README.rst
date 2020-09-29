@@ -16,7 +16,7 @@ Pull your ISP Quota and act on it.
 
 Supported ISPs:
 
-- `TekSavvy`_
+- `TekSavvy`_ **This has been deprecated** See `Deprecated`_
 - `Start.ca`_
 
 To avoid using command line flags create a config file at::
@@ -87,6 +87,7 @@ GPLv2
 .. _ReadTheDocs: http://tekuila.readthedocs.io/en/latest/
 .. _TekSavvy: https://teksavvy.com/
 .. _Start.ca: https://www.start.ca/
+.. _Deprecated: https://community.teksavvy.com/discussion/comment/120#Comment_120
 
 .. |travis| image:: https://img.shields.io/travis/mikeodr/tekuila.svg
         :target: https://travis-ci.org/mikeodr/tekuila
